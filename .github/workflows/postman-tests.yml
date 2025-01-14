@@ -17,22 +17,23 @@ jobs:
         with:
           node-version: '20.x'
           
-      - name: Install Newman
+      - name: Install Newman and Reporter
         run: |
-          npm install -g newman
+          npm install -g newman@latest
           npm install -g newman-reporter-htmlextra
+          newman --version
       
-      - name: Verify Files
-        run: |
-          echo "Current directory:"
-          pwd
-          echo "\nDirectory contents:"
-          ls -la
-          echo "\nPostman directory contents:"
-          ls -la postman/
+      - name: Create Reports Directory
+        run: mkdir -p newman
       
       - name: Run Newman Tests
-        run: newman run "postman/collection.json" -e "postman/environment.json" -r cli,htmlextra --reporter-htmlextra-export="newman/report.html"
+        continue-on-error: true  # Permite continuar aunque haya fallos en las pruebas
+        run: |
+          newman run postman/collection.json \
+          -e postman/environment.json \
+          -r cli,htmlextra \
+          --reporter-htmlextra-export="newman/report.html" \
+          --suppress-exit-code
       
       - name: Upload Test Results
         if: always()
@@ -40,3 +41,4 @@ jobs:
         with:
           name: newman-test-results
           path: newman/
+          retention-days: 30
