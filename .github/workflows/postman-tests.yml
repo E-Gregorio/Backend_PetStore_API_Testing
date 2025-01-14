@@ -1,6 +1,10 @@
 name: Postman API Tests
 
-on: [push]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   test:
@@ -15,33 +19,34 @@ jobs:
           
       - name: Install Dependencies
         run: |
-          npm install -g newman
-          npm install -g newman-reporter-htmlextra
-          npm install -g newman-reporter-allure
+          sudo npm install -g newman
+          sudo npm install -g newman-reporter-htmlextra
+          sudo npm install -g newman-reporter-allure
           
       - name: Create Reports Directory
         run: |
           mkdir -p newman
           mkdir -p allure-results
           
+      - name: List Directory Contents
+        run: |
+          pwd
+          ls -la
+          ls -la postman/
+          
       - name: Run Postman Collection
         run: |
-          newman run ./postman/collection.json \
-          -e ./postman/environment.json \
+          newman run "postman/collection.json" \
+          -e "postman/environment.json" \
           -r htmlextra,allure \
-          --reporter-htmlextra-export ./newman/htmlreport.html \
-          --reporter-allure-export ./allure-results
+          --reporter-htmlextra-export "newman/htmlreport.html" \
+          --reporter-allure-export "allure-results"
           
-      - name: Upload Newman Report
+      - name: Store Test Results
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: newman-report
-          path: newman/
-
-      - name: Upload Allure Results
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: allure-results
-          path: allure-results/
+          name: test-results
+          path: |
+            newman/
+            allure-results/
