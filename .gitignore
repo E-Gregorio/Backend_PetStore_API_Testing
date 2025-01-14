@@ -1,0 +1,11 @@
+
+echo "# Dependencies
+node_modules/
+
+# Test reports
+newman/
+allure-results/
+allure-report/
+
+# Logs
+*.log" > .gitignore

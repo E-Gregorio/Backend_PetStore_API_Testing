@@ -1,0 +1,75 @@
+{
+	"id": "9b19a912-c860-43d4-bf53-a717cc22f16d",
+	"name": "PetStore Environment",
+	"values": [
+		{
+			"key": "baseurl",
+			"value": "https://petstore.swagger.io/v2",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "api_key",
+			"value": "special-key",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "petId",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "petIdToDelete",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "currentInventory",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "orderId",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "orderIdToSearch",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "currentUsername",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "currentUserData",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "username",
+			"value": "claud",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "orderIdToDelete",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2025-01-13T23:50:00.535Z",
+	"_postman_exported_using": "Postman/11.27.4"
+}
