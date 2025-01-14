@@ -1,20 +1,17 @@
 name: Postman API Tests
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+
+on: [push]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       
       - name: Use Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '18.x'
           
       - name: Install Dependencies
         run: |
@@ -22,35 +19,29 @@ jobs:
           npm install -g newman-reporter-htmlextra
           npm install -g newman-reporter-allure
           
+      - name: Create Reports Directory
+        run: |
+          mkdir -p newman
+          mkdir -p allure-results
+          
       - name: Run Postman Collection
         run: |
-          newman run ./postman/collection.json -e ./postman/environment.json \
+          newman run ./postman/collection.json \
+          -e ./postman/environment.json \
           -r htmlextra,allure \
           --reporter-htmlextra-export ./newman/htmlreport.html \
           --reporter-allure-export ./allure-results
           
-      - name: Get Allure history
-        uses: actions/checkout@v2
+      - name: Upload Newman Report
         if: always()
-        continue-on-error: true
+        uses: actions/upload-artifact@v3
         with:
-          ref: gh-pages
-          path: gh-pages
-          
-      - name: Generate Allure Report
-        uses: simple-elf/allure-report-action@master
+          name: newman-report
+          path: newman/
+
+      - name: Upload Allure Results
         if: always()
+        uses: actions/upload-artifact@v3
         with:
-          allure_results: allure-results
-          allure_report: allure-report
-          gh_pages: gh-pages
-          allure_history: allure-history
-          
-      - name: Deploy report to Github Pages
-        uses: peaceiris/actions-gh-pages@v3
-        if: always()
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: allure-report
-          keep_files: true
+          name: allure-results
+          path: allure-results/
