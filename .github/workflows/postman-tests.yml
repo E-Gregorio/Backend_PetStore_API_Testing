@@ -1,6 +1,9 @@
 name: Postman API Tests
 on:
-  workflow_dispatch:
+  workflow_dispatch:  
+  push:              
+    branches:
+      - main         
 jobs:
   test:
     runs-on: ubuntu-latest
