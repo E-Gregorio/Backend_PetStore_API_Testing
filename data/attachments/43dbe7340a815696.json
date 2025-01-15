@@ -1,9 +1,0 @@
-{
-    "Accept": "application/json",
-    "User-Agent": "PostmanRuntime/7.39.1",
-    "Cache-Control": "no-cache",
-    "Postman-Token": "35f3a0ee-ad31-41e8-b7a8-2577105b44f3",
-    "Host": "petstore.swagger.io",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Connection": "keep-alive"
-}

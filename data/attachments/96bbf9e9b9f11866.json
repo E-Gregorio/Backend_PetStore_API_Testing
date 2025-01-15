@@ -1,0 +1,13 @@
+{
+    "Key": "Content-Type",
+    "Value": "pplication/json",
+    "Content-Type": "application/json",
+    "User-Agent": "PostmanRuntime/7.39.1",
+    "Accept": "*/*",
+    "Cache-Control": "no-cache",
+    "Postman-Token": "1546cc7d-c2d5-4ab4-be66-a198b4c25f0c",
+    "Host": "petstore.swagger.io",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive",
+    "Content-Length": "284"
+}
