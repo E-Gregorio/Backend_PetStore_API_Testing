@@ -21,18 +21,18 @@ jobs:
           npm install -g newman-reporter-allure
           newman --version
       
-      - name: Clean and Create Directories
-        run: |
-          sudo rm -rf newman allure-results allure-report
-          mkdir -p newman
-          mkdir -p allure-results
+          - name: Clean and Create Directories
+          run: |
+            rm -rf newman allure-results allure-report || true
+            mkdir -p newman
+            mkdir -p allure-results
       
-      - name: Install Allure
-        run: |
-          wget https://github.com/allure-framework/allure2/releases/download/2.24.1/allure-2.24.1.tgz
-          sudo tar -zxvf allure-2.24.1.tgz -C /opt/
-          sudo ln -s /opt/allure-2.24.1/bin/allure /usr/bin/allure
-          allure --version
+            - name: Install Allure
+            run: |
+              curl -o allure-2.24.1.tgz -OL https://github.com/allure-framework/allure2/releases/download/2.24.1/allure-2.24.1.tgz
+              sudo tar -zxvf allure-2.24.1.tgz -C /opt/
+              sudo ln -sf /opt/allure-2.24.1/bin/allure /usr/bin/allure
+              allure --version
       
       - name: Run Newman Tests
         continue-on-error: true
