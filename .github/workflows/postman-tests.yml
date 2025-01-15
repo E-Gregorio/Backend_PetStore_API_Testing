@@ -1,9 +1,10 @@
 name: Postman API Tests
 on:
-  workflow_dispatch:  
-  push:              
+  workflow_dispatch:
+  push:
     branches:
-      - main         
+      - main
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -21,7 +22,7 @@ jobs:
           sudo npm install -g newman-reporter-htmlextra
           sudo npm install -g newman-reporter-allure
           newman --version
-     
+
       - name: Clean and Create Directories
         run: |
           sudo rm -rf newman allure-results allure-report
@@ -29,44 +30,44 @@ jobs:
           sudo mkdir -p newman
           sudo mkdir -p allure-results
           sudo chmod -R 777 newman allure-results
-     
-          - name: Set up Allure
-          run: |
-            sudo apt-get update
-            sudo apt-get install -y default-jre unzip
-            wget https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.24.1/allure-commandline-2.24.1.zip
-            sudo unzip -q allure-commandline-2.24.1.zip -d /opt/
-            sudo chmod -R +x /opt/allure-commandline-2.24.1/bin
-            sudo ln -sf /opt/allure-commandline-2.24.1/bin/allure /usr/local/bin/allure
-            echo "Verifying Allure installation..."
-            which allure || echo "Allure not found in PATH"
-            allure --version || echo "Allure command failed"
-     
-            - name: Run Newman Tests
-            continue-on-error: true
-            run: |
-              echo "Running Newman tests..."
-              newman run postman/collection.json \
-              -e postman/environment.json \
-              -r cli,htmlextra,allure \
-              --reporter-htmlextra-export="newman/report.html" \
-              --reporter-allure-export="allure-results" \
-              --suppress-exit-code
-              echo "Listing generated files..."
-              ls -la newman/ || true
-              ls -la allure-results/ || true
-     
-          - name: Generate Allure Report
-          if: always()
-          run: |
-            echo "PATH=$PATH"
-            echo "Checking Allure installation..."
-            which allure || true
-            echo "Listing allure-results directory..."
-            ls -la allure-results || true
-            echo "Generating Allure report..."
-            /opt/allure-commandline-2.24.1/bin/allure generate allure-results --clean -o allure-report
-     
+
+      - name: Set up Allure
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y default-jre unzip
+          wget https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.24.1/allure-commandline-2.24.1.zip
+          sudo unzip -q allure-commandline-2.24.1.zip -d /opt/
+          sudo chmod -R +x /opt/allure-commandline-2.24.1/bin
+          sudo ln -sf /opt/allure-commandline-2.24.1/bin/allure /usr/local/bin/allure
+          echo "Verifying Allure installation..."
+          which allure || echo "Allure not found in PATH"
+          allure --version || echo "Allure command failed"
+
+      - name: Run Newman Tests
+        continue-on-error: true
+        run: |
+          echo "Running Newman tests..."
+          newman run postman/collection.json \
+          -e postman/environment.json \
+          -r cli,htmlextra,allure \
+          --reporter-htmlextra-export="newman/report.html" \
+          --reporter-allure-export="allure-results" \
+          --suppress-exit-code
+          echo "Listing generated files..."
+          ls -la newman/ || true
+          ls -la allure-results/ || true
+
+      - name: Generate Allure Report
+        if: always()
+        run: |
+          echo "PATH=$PATH"
+          echo "Checking Allure installation..."
+          which allure || true
+          echo "Listing allure-results directory..."
+          ls -la allure-results || true
+          echo "Generating Allure report..."
+          /opt/allure-commandline-2.24.1/bin/allure generate allure-results --clean -o allure-report
+
       - name: Upload Newman Results
         if: always()
         uses: actions/upload-artifact@v4
@@ -74,7 +75,7 @@ jobs:
           name: newman-report
           path: newman/
           if-no-files-found: warn
-     
+
       - name: Deploy Report to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v3
