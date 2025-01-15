@@ -1,0 +1,34 @@
+let responseJson;
+
+// Validar que el nombre de usuario esté definido en la variable de entorno
+pm.test("Se obtuvo un nombre de usuario válido", function () {
+    const username = pm.environment.get("username");
+    pm.expect(username).to.not.be.undefined;
+    pm.expect(username).to.not.be.null;
+    pm.expect(username).to.be.a('string').and.not.be.empty;
+});
+
+// Validar el código de respuesta
+pm.test("El código de estado es 200 o 404", function () {
+    pm.expect([200, 404]).to.include(pm.response.code);
+});
+
+// Validar que la respuesta es JSON válido
+pm.test("La respuesta es JSON válido", function () {
+    try {
+        responseJson = pm.response.json();
+        pm.expect(responseJson).to.be.an('object');
+    } catch (e) {
+        pm.expect.fail('La respuesta no es JSON válido: ' + e.message);
+    }
+});
+
+// Validar si el usuario existe o no en la base de datos
+if (pm.response.code === 200) {
+    pm.test("El usuario existe en la base de datos", function () {
+        const expectedUsername = pm.environment.get("username");
+        pm.expect(responseJson).to.have.property('username');
+        pm.expect(responseJson.username).to.equal(expectedUsername);
+    });
+
+}

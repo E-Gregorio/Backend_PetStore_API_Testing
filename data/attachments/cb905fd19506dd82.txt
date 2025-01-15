@@ -1,0 +1,1 @@
+{"id":1736930690477,"username":"testUser_1736930690477","firstName":"Test","lastName":"User","email":"testuser_1736930690477@test.com","password":"test123","phone":"1234567890","userStatus":1}

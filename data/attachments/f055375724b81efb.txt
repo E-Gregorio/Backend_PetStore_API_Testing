@@ -1,0 +1,1 @@
+{"id":123456789,"category":{"id":0,"name":"string"},"name":"Claud","photoUrls":["url1","url2"],"tags":[{"id":0,"name":"tag1"}],"status":"available"}

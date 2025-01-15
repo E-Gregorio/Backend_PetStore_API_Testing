@@ -1,0 +1,15 @@
+pm.test("El código de estado es 200 OK", function () {
+    pm.response.to.have.status(200);
+});
+
+pm.test("El cuerpo de la respuesta contiene los valores esperados", function () {
+    const responseBody = pm.response.json();
+
+    
+    pm.expect(responseBody).to.have.property('id').that.is.a('number');
+    pm.expect(responseBody).to.have.property('petId').that.is.a('number');
+    pm.expect(responseBody).to.have.property('quantity').that.is.a('number');
+    pm.expect(responseBody).to.have.property('shipDate').that.is.a('string');  
+    pm.expect(responseBody).to.have.property('status').that.is.a('string');     
+    pm.expect(responseBody).to.have.property('complete').that.is.a('boolean');  
+});

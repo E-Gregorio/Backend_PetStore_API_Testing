@@ -1,0 +1,33 @@
+
+const getUserRequest = {
+    url: 'https://petstore.swagger.io/v2/user/user1',
+    method: 'GET',
+    header: {
+        'accept': 'application/json'
+    }
+};
+
+async function setUsername() {
+    try {
+        const response = await pm.sendRequest(getUserRequest);
+        const user = response.json();
+        
+        if (!user || user.code !== 200) {
+            console.error("No se encontró el usuario especificado o el estado no es 200");
+            return;
+        }
+        
+        
+        const username = user.username;
+        pm.environment.set("username", username);
+        console.log("Nombre de usuario guardado:", username);
+        
+        
+        pm.request.url.path = `/v2/user/${username}`;
+        
+    } catch (error) {
+        console.error("Error en pre-request:", error);
+    }
+}
+
+setUsername();

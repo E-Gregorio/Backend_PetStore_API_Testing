@@ -1,0 +1,21 @@
+let responseJson;
+
+pm.test("El código de estado es 200 OK", function () {
+    pm.response.to.have.status(200);
+});
+
+pm.test("La respuesta es JSON válido", function () {
+    try {
+        responseJson = pm.response.json();
+    } catch (e) {
+        pm.expect.fail("La respuesta no es un JSON válido: " + e.message);
+    }
+});
+
+if (responseJson) {
+    pm.test("El Inventario esta Disponible", function () {
+        pm.expect(responseJson).to.have.property("available").that.is.a("number");
+    });
+
+  
+}

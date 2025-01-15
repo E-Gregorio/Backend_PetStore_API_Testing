@@ -1,0 +1,32 @@
+const petId = Math.floor(Math.random() * 100000); // ID aleatorio entre 0 y 99,999
+pm.environment.set("petIdToDelete", petId);
+
+const createPetRequest = {
+    url: 'https://petstore.swagger.io/v2/pet',
+    method: 'POST',
+    header: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    },
+    body: {
+        mode: 'raw',
+        raw: JSON.stringify({
+            "id": petId,
+            "name": "TestPet_" + Date.now(),
+            "status": "available",
+            "photoUrls": ["url1"],
+            "category": { "id": 1, "name": "Dogs" },
+            "tags": [{ "id": 1, "name": "test-tag" }]
+        })
+    }
+};
+
+pm.sendRequest(createPetRequest, function (err, response) {
+    if (err) {
+        console.error("Error creando la mascota:", err);
+    } else if (response.code === 200) {
+        console.log("Mascota creada exitosamente:", response.json());
+    } else {
+        console.error("Error inesperado al crear la mascota:", response.json());
+    }
+});

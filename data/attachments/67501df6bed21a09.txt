@@ -1,0 +1,29 @@
+pm.test("Status code is 404", function () {
+    pm.response.to.have.status(404);
+});
+
+pm.test("Response contains error message", function () {
+    var contentType = pm.response.headers.get('Content-Type');
+    
+    if (contentType && contentType.indexOf('application/json') > -1) {
+        var jsonData = pm.response.json();
+        pm.expect(jsonData).to.have.property('message');
+        pm.expect(jsonData.message).to.eql('Pet not found');
+    } else {
+        
+        pm.expect(contentType).to.eql('text/html');
+    }
+});
+
+pm.test("Response contains error type", function () {
+    var contentType = pm.response.headers.get('Content-Type');
+    
+    if (contentType && contentType.indexOf('application/json') > -1) {
+        var jsonData = pm.response.json();
+        pm.expect(jsonData).to.have.property('type');
+        pm.expect(jsonData.type).to.eql('unknown');
+    } else {
+        
+        pm.expect(contentType).to.eql('text/html');
+    }
+});

@@ -1,0 +1,13 @@
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+
+pm.test("Response contains updated pet details", function () {
+    let jsonData = pm.response.json();
+    let petId = parseInt(pm.environment.get("petId"));
+    
+    // Asegúrate de que el id recibido en la respuesta sea igual al que se envió
+    pm.expect(jsonData.id).to.eql(petId);
+    pm.expect(jsonData.name).to.eql("Buddy Updated");
+    pm.expect(jsonData.status).to.eql("sold");
+});
