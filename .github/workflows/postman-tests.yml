@@ -21,18 +21,16 @@ jobs:
           npm install -g newman-reporter-allure
           newman --version
       
-      - name: Setup Allure
-        uses: simple-elf/allure-report-action@master
-        if: always()
-        id: allure-report
-        with:
-          allure_results: allure-results
-          allure_report: allure-report
-          gh_pages: gh-pages
-          allure_history: allure-history
+      - name: Install Allure CommandLine
+        run: |
+          curl -o allure-2.24.1.tgz -OL https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.24.1/allure-commandline-2.24.1.tgz
+          sudo tar -zxvf allure-2.24.1.tgz -C /opt/
+          sudo ln -s /opt/allure-2.24.1/bin/allure /usr/bin/allure
+          allure --version
       
       - name: Create Directories
         run: |
+          rm -rf newman allure-results allure-report
           mkdir -p newman
           mkdir -p allure-results
       
@@ -59,7 +57,7 @@ jobs:
           path: newman/
           retention-days: 30
           
-      - name: Deploy Allure Report to GitHub Pages
+      - name: Deploy to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v3
         with:
