@@ -1,8 +1,0 @@
-pm.test("Validar que el código de estado sea 404", function () {
-    pm.response.to.have.status(404);
-});
-
-pm.test("Validar que la respuesta contiene el mensaje esperado", function () {
-    pm.response.to.have.jsonBody('message');
-    pm.expect(pm.response.json().message).to.eql('User not found');
-});

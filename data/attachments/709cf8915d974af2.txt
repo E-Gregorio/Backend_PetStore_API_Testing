@@ -1,2 +1,0 @@
-level: error, messages: Error en pre-request:,[object Object]
-level: log, messages: Valor de petId: ,

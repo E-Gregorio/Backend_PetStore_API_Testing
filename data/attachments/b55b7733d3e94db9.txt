@@ -1,1 +1,0 @@
-level: error, messages: Error al obtener el inventario:,[object Object]
