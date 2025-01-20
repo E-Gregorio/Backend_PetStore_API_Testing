@@ -48,7 +48,7 @@ jobs:
         continue-on-error: true
         run: |
           echo "Running Newman tests..."
-          $ newman run "https://api.getpostman.com/collections/40948063-d9df03ae-a99f-4099-95e3-ec4be226ff3e?apikey=${{env.API_KEY}}" \
+          newman run "https://api.getpostman.com/collections/40948063-d9df03ae-a99f-4099-95e3-ec4be226ff3e?apikey=${{env.API_KEY}}" \
           --environment "https://api.getpostman.com/environments/40948063-9b19a912-c860-43d4-bf53-a717cc22f16d?apikey=${{env.API_KEY}}"
           -r cli,htmlextra,allure \
           --reporter-htmlextra-export="newman/report.html" \
