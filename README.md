@@ -1,9 +1,10 @@
 Backend PetStore API Testing Project 🚀
 📋 Descripción
-Este proyecto implementa una suite completa de pruebas automatizadas para la API de PetStore, utilizando Postman/Newman como framework principal de testing. La automatización está integrada con GitHub Actions para CI/CD, generando reportes detallados a través de Allure y HTMLExtra para un análisis profundo de los resultados.
+Este proyecto implementa una suite completa de pruebas automatizadas para la API de PetStore, utilizando Postman/Newman como framework principal de testing. La automatización está integrada con GitHub Actions para CI/CD y la API de Postman, generando reportes detallados a través de Allure y HTMLExtra para un análisis profundo de los resultados.
 🌟 Características Principales
 
 Automatización completa de endpoints REST API
+Integración con API de Postman para actualización automática de pruebas
 Ejecución paralela de pruebas
 Reportes detallados con Allure y HTMLExtra
 Integración continua con GitHub Actions
@@ -12,12 +13,12 @@ Assertions avanzados
 Variables de entorno configurables
 
 🏗️ Estructura del Proyecto
-bashCopyBackend_PetStore_API_Testing/
+CopyBackend_PetStore_API_Testing/
 ├── .github/
 │   └── workflows/
 │       └── postman-tests.yml    # Configuración de GitHub Actions
 ├── postman/
-│   ├── collections.json         # Suite de pruebas Postman
+│   ├── collection.json          # Suite de pruebas Postman
 │   └── environment.json         # Variables de ambiente
 ├── allure-report/              # Reportes Allure generados
 ├── allure-results/             # Datos de resultados Allure
@@ -27,10 +28,11 @@ bashCopyBackend_PetStore_API_Testing/
 └── README.md
 📋 Prerrequisitos
 
-Node.js (v14.0.0 o superior)
+Node.js (v20.x o superior)
 npm (incluido con Node.js)
 Git
 Cuenta de GitHub
+API Key de Postman configurada
 
 🛠️ Instalación y Configuración
 Instalación Local
@@ -39,7 +41,7 @@ git clone https://github.com/ElyerMaldonado/Backend_PetStore_API_Testing.git
 cd Backend_PetStore_API_Testing
 
 # Instalar dependencias globales
-npm install -g newman
+npm install -g newman@latest
 npm install -g newman-reporter-htmlextra
 npm install -g newman-reporter-allure
 
@@ -51,16 +53,26 @@ bashCopy# Verificar instalación correcta
 newman --version
 npm list -g newman-reporter-htmlextra
 npm list -g newman-reporter-allure
+Configuración de Secretos
+
+En GitHub, ir a Settings > Secrets > Actions
+Crear nuevo secreto:
+
+Nombre: POSTMAN_API_KEY
+Valor: Tu API key de Postman
+
+
+
 🚀 Ejecución de Pruebas
 Ejecución Local
 bashCopy# Ejecutar todas las pruebas con generación de reportes
-newman run ./postman/collections.json -e ./postman/environment.json -r htmlextra,allure
+newman run ./postman/collection.json -e ./postman/environment.json -r htmlextra,allure
 
 # Ejecutar una colección específica
-newman run ./postman/collections.json -e ./postman/environment.json --folder "Pet API Tests" -r htmlextra,allure
+newman run ./postman/collection.json -e ./postman/environment.json --folder "Pet API Tests" -r htmlextra,allure
 
 # Ejecutar con variables de ambiente personalizadas
-newman run ./postman/collections.json -e ./postman/environment.json --env-var "baseUrl=https://petstore.swagger.io/v2" -r htmlextra,allure
+newman run ./postman/collection.json -e ./postman/environment.json --env-var "baseUrl=https://petstore.swagger.io/v2" -r htmlextra,allure
 📊 Reportes Generados
 HTMLExtra Report (./newman/)
 
@@ -74,7 +86,7 @@ Detalles de requests/responses
 
 
 
-Allure Report (./allure-report/)
+Allure Report
 bashCopy# Generar reporte Allure
 allure generate allure-results -o allure-report --clean
 
@@ -87,16 +99,8 @@ El workflow se activa automáticamente en:
 Push a main
 Pull Requests a main
 Ejecución manual desde la interfaz de Actions
+Actualizaciones en la colección de Postman (mediante API Key)
 
-yamlCopy# Ejemplo de ejecución manual
-name: Manual workflow
-on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to run tests against'
-        required: true
-        default: 'production'
 🌐 Visualización de Resultados
 
 HTMLExtra Report: https://[username].github.io/Backend_PetStore_API_Testing/newman/
@@ -149,13 +153,14 @@ Este proyecto está bajo la Licencia MIT - ver el archivo LICENSE.md para detall
 
 ✅ 100% de cobertura en endpoints principales
 ✅ Tiempo promedio de ejecución < 2 minutos
-✅ Integración exitosa con CI/CD
+✅ Integración exitosa con CI/CD y API de Postman
 ✅ Reportes detallados y accesibles
 ✅ Documentación completa y mantenible
 
 🔍 Notas Adicionales
 
 Los reportes se actualizan automáticamente después de cada ejecución en GitHub Actions
+Integración automática con Postman mediante API Key
 Se mantiene un histórico de las últimas 10 ejecuciones
 Las pruebas incluyen validaciones de esquema JSON para asegurar la integridad de los datos
 Se implementan retry mechanisms para pruebas inestables
