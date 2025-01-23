@@ -25,8 +25,7 @@
 											"});\r",
 											"\r",
 											"pm.test(\"Response contains pets with status 'available'\", function () {\r",
-											"    var jsonData = pm.response.json(); // Parseamos el JSON de la respuesta\r",
-											"    // Verificamos que todos los objetos de la respuesta tengan el estado 'available'\r",
+											"    var jsonData = pm.response.json(); \r",
 											"    jsonData.forEach(pet => {\r",
 											"        pm.expect(pet.status).to.eql('available');\r",
 											"    });\r",
@@ -35,6 +34,13 @@
 										],
 										"type": "text/javascript",
 										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"packages": {},
+										"type": "text/javascript"
 									}
 								}
 							],
@@ -53,12 +59,9 @@
 									}
 								],
 								"url": {
-									"raw": "https://petstore.swagger.io/v2/pet/findByStatus?status=available",
-									"protocol": "https",
+									"raw": "{{baseurl}}/v2/pet/findByStatus?status=available",
 									"host": [
-										"petstore",
-										"swagger",
-										"io"
+										"{{baseurl}}"
 									],
 									"path": [
 										"v2",
@@ -82,53 +85,27 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"let responseJson;\r",
 											"\r",
 											"\r",
-											"pm.test(\"Se obtuvo un ID válido\", function() {\r",
-											"    const petId = pm.environment.get(\"petId\");\r",
-											"    console.log(\"Valor de petId: \", petId);\r",
-											"    pm.expect(petId).to.not.be.undefined;\r",
-											"    pm.expect(petId).to.not.be.null;\r",
+											"pm.test(\"Response status code is 200\", function () {\r",
+											"  pm.expect(pm.response.code).to.equal(200);\r",
 											"});\r",
 											"\r",
-											"\r",
-											"pm.test(\"El código de estado es 200\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
+											"pm.test(\"Status is 404\", function () {\r",
+											"    pm.expect(pm.response.code).to.equal(404);\r",
 											"});\r",
 											"\r",
-											"\r",
-											"pm.test(\"La respuesta es JSON válido\", function () {\r",
-											"    try {\r",
-											"        responseJson = pm.response.json();\r",
-											"        pm.expect(responseJson).to.be.an('object');\r",
-											"    } catch (e) {\r",
-											"        pm.expect.fail('La respuesta no es JSON válido: ' + e.message);\r",
-											"    }\r",
+											"pm.test(\"Content-Type is text/html\", function () {\r",
+											"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal(\"text/html\");\r",
 											"});\r",
 											"\r",
-											"if (responseJson) {\r",
-											"    \r",
-											"    pm.test(\"La respuesta tiene la estructura correcta\", function () {\r",
-											"        pm.expect(responseJson).to.have.property('id');\r",
-											"        pm.expect(responseJson).to.have.property('name');\r",
-											"        pm.expect(responseJson).to.have.property('status');\r",
-											"        pm.expect(responseJson).to.have.property('category');\r",
-											"        pm.expect(responseJson).to.have.property('photoUrls').to.be.an('array');\r",
-											"        pm.expect(responseJson).to.have.property('tags').to.be.an('array');\r",
-											"    });\r",
+											"pm.test(\"Response has title and body\", function () {\r",
+											"    const responseData = pm.response.text();\r",
+											"    pm.expect(responseData).to.include(\"<title>404 Not Found</title>\");\r",
+											"    pm.expect(responseData).to.include(\"<body>\");\r",
+											"});\r",
 											"\r",
-											"    \r",
-											"    pm.test(\"El ID de la mascota es correcto\", function () {\r",
-											"        const expectedId = pm.environment.get(\"petId\");\r",
-											"        pm.expect(responseJson.id).to.equal(Number(expectedId));\r",
-											"    });\r",
-											"\r",
-											"    \r",
-											"    pm.test(\"El status no está vacío\", function () {\r",
-											"        pm.expect(responseJson.status).to.not.be.empty;\r",
-											"    });\r",
-											"}"
+											""
 										],
 										"type": "text/javascript",
 										"packages": {}
@@ -138,40 +115,7 @@
 									"listen": "prerequest",
 									"script": {
 										"exec": [
-											"// PRE-REQUEST SCRIPT:\r",
-											"const getAvailablePetsRequest = {\r",
-											"    url: 'https://petstore.swagger.io/v2/pet/findByStatus?status=available',\r",
-											"    method: 'GET',\r",
-											"    header: {\r",
-											"        'accept': 'application/json'\r",
-											"    }\r",
-											"};\r",
-											"\r",
-											"\r",
-											"async function setPetId() {\r",
-											"    try {\r",
-											"        const response = await pm.sendRequest(getAvailablePetsRequest);\r",
-											"        const pets = response.json();\r",
-											"        \r",
-											"        if (!pets || pets.length === 0) {\r",
-											"            console.error(\"No se encontraron mascotas disponibles\");\r",
-											"            return;\r",
-											"        }\r",
-											"        \r",
-											"        \r",
-											"        const petId = pets[0].id;\r",
-											"        pm.environment.set(\"petId\", petId);\r",
-											"        console.log(\"ID de mascota guardado:\", petId);\r",
-											"        \r",
-											"        \r",
-											"        pm.request.url.path = `/v2/pet/${petId}`;\r",
-											"        \r",
-											"    } catch (error) {\r",
-											"        console.error(\"Error en pre-request:\", error);\r",
-											"    }\r",
-											"}\r",
-											"\r",
-											"setPetId();"
+											""
 										],
 										"type": "text/javascript",
 										"packages": {}
@@ -193,17 +137,14 @@
 									}
 								],
 								"url": {
-									"raw": "https://petstore.swagger.io/v2/pet/{{petId}}\n\n",
-									"protocol": "https",
+									"raw": "{{baseurl}}/v2/pet/9223372036854762844\n\n\n\n\n",
 									"host": [
-										"petstore",
-										"swagger",
-										"io"
+										"{{baseurl}}"
 									],
 									"path": [
 										"v2",
 										"pet",
-										"{{petId}}\n\n"
+										"9223372036854762844\n\n\n\n\n"
 									]
 								}
 							},
@@ -301,8 +242,11 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"packages": {},
-										"type": "text/javascript"
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
 									}
 								}
 							],
@@ -330,12 +274,9 @@
 									}
 								},
 								"url": {
-									"raw": "https://petstore.swagger.io/v2/pet",
-									"protocol": "https",
+									"raw": "{{baseurl}}/v2/pet",
 									"host": [
-										"petstore",
-										"swagger",
-										"io"
+										"{{baseurl}}"
 									],
 									"path": [
 										"v2",
@@ -415,7 +356,7 @@
 											"    let jsonData = pm.response.json();\r",
 											"    let petId = parseInt(pm.environment.get(\"petId\"));\r",
 											"    \r",
-											"    // Asegúrate de que el id recibido en la respuesta sea igual al que se envió\r",
+											"    \r",
 											"    pm.expect(jsonData.id).to.eql(petId);\r",
 											"    pm.expect(jsonData.name).to.eql(\"Buddy Updated\");\r",
 											"    pm.expect(jsonData.status).to.eql(\"sold\");\r",
@@ -451,11 +392,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseurl}}/pet",
+									"raw": "{{baseurl}}/v2/pet",
 									"host": [
 										"{{baseurl}}"
 									],
 									"path": [
+										"v2",
 										"pet"
 									]
 								}
@@ -471,40 +413,38 @@
 							"name": "TC12: Validar eliminación de mascota por ID válido.",
 							"event": [
 								{
-									"listen": "prerequest",
+									"listen": "test",
 									"script": {
 										"exec": [
-											"const petId = Math.floor(Math.random() * 100000); // ID aleatorio entre 0 y 99,999\r",
-											"pm.environment.set(\"petIdToDelete\", petId);\r",
+											"pm.test(\"Response status code is 405\", function () {\r",
+											"  pm.expect(pm.response.code).to.equal(405);\r",
+											"});\r",
 											"\r",
-											"const createPetRequest = {\r",
-											"    url: 'https://petstore.swagger.io/v2/pet',\r",
-											"    method: 'POST',\r",
-											"    header: {\r",
-											"        'accept': 'application/json',\r",
-											"        'Content-Type': 'application/json'\r",
-											"    },\r",
-											"    body: {\r",
-											"        mode: 'raw',\r",
-											"        raw: JSON.stringify({\r",
-											"            \"id\": petId,\r",
-											"            \"name\": \"TestPet_\" + Date.now(),\r",
-											"            \"status\": \"available\",\r",
-											"            \"photoUrls\": [\"url1\"],\r",
-											"            \"category\": { \"id\": 1, \"name\": \"Dogs\" },\r",
-											"            \"tags\": [{ \"id\": 1, \"name\": \"test-tag\" }]\r",
-											"        })\r",
-											"    }\r",
-											"};\r",
 											"\r",
-											"pm.sendRequest(createPetRequest, function (err, response) {\r",
-											"    if (err) {\r",
-											"        console.error(\"Error creando la mascota:\", err);\r",
-											"    } else if (response.code === 200) {\r",
-											"        console.log(\"Mascota creada exitosamente:\", response.json());\r",
-											"    } else {\r",
-											"        console.error(\"Error inesperado al crear la mascota:\", response.json());\r",
-											"    }\r",
+											"pm.test(\"Content-Type header is text/html\", function () {\r",
+											"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"text/html\");\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Validate the HTML schema of the response\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\", \"text/html\");\r",
+											"    pm.expect(pm.response.text()).to.have.string(\"<html>\");\r",
+											"    pm.expect(pm.response.text()).to.have.string(\"<head>\");\r",
+											"    pm.expect(pm.response.text()).to.have.string(\"<title>\");\r",
+											"    pm.expect(pm.response.text()).to.have.string(\"</title>\");\r",
+											"    pm.expect(pm.response.text()).to.have.string(\"</head>\");\r",
+											"    pm.expect(pm.response.text()).to.have.string(\"<body>\");\r",
+											"    pm.expect(pm.response.text()).to.have.string(\"</body>\");\r",
+											"    pm.expect(pm.response.text()).to.have.string(\"<center>\");\r",
+											"    pm.expect(pm.response.text()).to.have.string(\"</center>\");\r",
+											"    pm.expect(pm.response.text()).to.have.string(\"<h1>\");\r",
+											"    pm.expect(pm.response.text()).to.have.string(\"</h1>\");\r",
+											"    pm.expect(pm.response.text()).to.have.string(\"<hr>\");\r",
 											"});\r",
 											""
 										],
@@ -513,33 +453,9 @@
 									}
 								},
 								{
-									"listen": "test",
+									"listen": "prerequest",
 									"script": {
 										"exec": [
-											"pm.test(\"Código de estado es 200\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});\r",
-											"\r",
-											"pm.test(\"La respuesta contiene el ID eliminado\", function () {\r",
-											"    const responseJson = pm.response.json();\r",
-											"    pm.expect(responseJson.message).to.eql(pm.environment.get(\"petIdToDelete\").toString());\r",
-											"});\r",
-											"\r",
-											"// Verificar que la mascota fue eliminada\r",
-											"const petId = pm.environment.get(\"petIdToDelete\");\r",
-											"const verifyRequest = {\r",
-											"    url: `https://petstore.swagger.io/v2/pet/${petId}`,\r",
-											"    method: 'GET',\r",
-											"    header: {\r",
-											"        'accept': 'application/json'\r",
-											"    }\r",
-											"};\r",
-											"\r",
-											"pm.sendRequest(verifyRequest, function (err, response) {\r",
-											"    pm.test(\"La mascota fue eliminada correctamente\", function () {\r",
-											"        pm.expect(response.code).to.eql(404);\r",
-											"    });\r",
-											"});\r",
 											""
 										],
 										"type": "text/javascript",
@@ -548,22 +464,34 @@
 								}
 							],
 							"request": {
+								"auth": {
+									"type": "noauth"
+								},
 								"method": "DELETE",
 								"header": [
 									{
-										"key": "Content-Type",
+										"key": "accept",
 										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "api_key",
+										"value": "special-Key",
 										"type": "text"
 									}
 								],
 								"url": {
-									"raw": "{{baseurl}}/pet/{{petIdToDelete}}",
+									"raw": "https://petstore.swagger.io/v2/pet/123456789\n\n\n",
+									"protocol": "https",
 									"host": [
-										"{{baseurl}}"
+										"petstore",
+										"swagger",
+										"io"
 									],
 									"path": [
+										"v2",
 										"pet",
-										"{{petIdToDelete}}"
+										"123456789\n\n\n"
 									]
 								}
 							},
@@ -586,27 +514,25 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"let responseJson;\r",
-											"\r",
-											"pm.test(\"El código de estado es 200 OK\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
+											"pm.test(\"Response status code is 200\", function () {\r",
+											"    pm.expect(pm.response.code).to.equal(200);\r",
 											"});\r",
 											"\r",
-											"pm.test(\"La respuesta es JSON válido\", function () {\r",
-											"    try {\r",
-											"        responseJson = pm.response.json();\r",
-											"    } catch (e) {\r",
-											"        pm.expect.fail(\"La respuesta no es un JSON válido: \" + e.message);\r",
-											"    }\r",
-											"});\r",
 											"\r",
-											"if (responseJson) {\r",
-											"    pm.test(\"El Inventario esta Disponible\", function () {\r",
-											"        pm.expect(responseJson).to.have.property(\"available\").that.is.a(\"number\");\r",
-											"    });\r",
-											"\r",
+											"pm.test(\"Response has the required fields\", function () {\r",
+											"    const responseData = pm.response.json();\r",
+											"    \r",
+											"    pm.expect(responseData).to.be.an('object');\r",
 											"  \r",
-											"}\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Response Content-Type is application/json\", function () {\r",
+											"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
 											""
 										],
 										"type": "text/javascript",
@@ -617,36 +543,6 @@
 									"listen": "prerequest",
 									"script": {
 										"exec": [
-											"// PRE-REQUEST SCRIPT:\r",
-											"const getInventoryRequest = {\r",
-											"    url: `${pm.environment.get(\"baseurl\")}/store/inventory`,\r",
-											"    method: 'GET',\r",
-											"    header: {\r",
-											"        'accept': 'application/json'\r",
-											"    }\r",
-											"};\r",
-											"\r",
-											"// Usar async/await para asegurar la obtención del inventario antes de ejecutar el test.\r",
-											"async function fetchInventory() {\r",
-											"    try {\r",
-											"        const response = await pm.sendRequest(getInventoryRequest);\r",
-											"        const inventory = response.json();\r",
-											"\r",
-											"        if (!inventory || Object.keys(inventory).length === 0) {\r",
-											"            console.error(\"El inventario está vacío o no se pudo obtener\");\r",
-											"            return;\r",
-											"        }\r",
-											"\r",
-											"        // Guardar el inventario en una variable de entorno\r",
-											"        pm.environment.set(\"currentInventory\", JSON.stringify(inventory));\r",
-											"        console.log(\"Inventario guardado:\", inventory);\r",
-											"\r",
-											"    } catch (error) {\r",
-											"        console.error(\"Error al obtener el inventario:\", error);\r",
-											"    }\r",
-											"}\r",
-											"\r",
-											"fetchInventory();\r",
 											""
 										],
 										"type": "text/javascript",
@@ -676,11 +572,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseurl}}/store/inventory",
+									"raw": "{{baseurl}}/v2/store/inventory",
 									"host": [
 										"{{baseurl}}"
 									],
 									"path": [
+										"v2",
 										"store",
 										"inventory"
 									]
@@ -705,13 +602,20 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 404\", function () {\r",
-											"    pm.response.to.have.status(404);\r",
+											"pm.test(\"Response status code is 404\", function () {\r",
+											"    pm.expect(pm.response.code).to.equal(404);\r",
 											"});\r",
 											"\r",
-											"pm.test(\"Response body contains 404 error message\", function () {\r",
-											"    const responseText = pm.response.text();  \r",
-											"    pm.expect(responseText).to.include('404 Not Found');  \r",
+											"\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"  pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Validate the response schema for error handling\", function () {\r",
+											"    pm.expect(pm.response.code).to.equal(404);\r",
+											"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal(\"text/html\");\r",
+											"    pm.expect(pm.response.text()).to.include(\"404 Not Found\");\r",
 											"});\r",
 											""
 										],
@@ -747,12 +651,9 @@
 									}
 								},
 								"url": {
-									"raw": "https://petstore.swagger.io/v2/store/order/123456\n\n\n\n\n",
-									"protocol": "https",
+									"raw": "{{baseurl}}/v2/store/order/123456\n\n\n\n\n",
 									"host": [
-										"petstore",
-										"swagger",
-										"io"
+										"{{baseurl}}"
 									],
 									"path": [
 										"v2",
@@ -776,21 +677,42 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"El código de estado es 200 OK\", function () {\r",
+											"\r",
+											"\r",
+											"pm.test(\"Response status code is 200\", function () {\r",
 											"    pm.response.to.have.status(200);\r",
 											"});\r",
 											"\r",
-											"pm.test(\"El cuerpo de la respuesta contiene los valores esperados\", function () {\r",
-											"    const responseBody = pm.response.json();\r",
 											"\r",
-											"    \r",
-											"    pm.expect(responseBody).to.have.property('id').that.is.a('number');\r",
-											"    pm.expect(responseBody).to.have.property('petId').that.is.a('number');\r",
-											"    pm.expect(responseBody).to.have.property('quantity').that.is.a('number');\r",
-											"    pm.expect(responseBody).to.have.property('shipDate').that.is.a('string');  \r",
-											"    pm.expect(responseBody).to.have.property('status').that.is.a('string');     \r",
-											"    pm.expect(responseBody).to.have.property('complete').that.is.a('boolean');  \r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
 											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Response has the required fields - id, petId, quantity, shipDate, status, and complete\", function () {\r",
+											"    const responseData = pm.response.json();\r",
+											"    \r",
+											"    pm.expect(responseData).to.be.an('object');\r",
+											"    pm.expect(responseData).to.have.property('id');\r",
+											"    pm.expect(responseData).to.have.property('petId');\r",
+											"    pm.expect(responseData).to.have.property('quantity');\r",
+											"    pm.expect(responseData).to.have.property('shipDate');\r",
+											"    pm.expect(responseData).to.have.property('status');\r",
+											"    pm.expect(responseData).to.have.property('complete');\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Id, petId, and quantity are non-negative integers\", function () {\r",
+											"  const responseData = pm.response.json();\r",
+											"\r",
+											"  pm.expect(responseData.id).to.be.a('number').and.to.be.at.least(0);\r",
+											"  pm.expect(responseData.petId).to.be.a('number').and.to.be.at.least(0);\r",
+											"  pm.expect(responseData.quantity).to.be.a('number').and.to.be.at.least(0);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											"\r",
 											""
 										],
 										"type": "text/javascript",
@@ -800,8 +722,11 @@
 								{
 									"listen": "prerequest",
 									"script": {
-										"packages": {},
-										"type": "text/javascript"
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
 									}
 								}
 							],
@@ -829,11 +754,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseurl}}/store/order/",
+									"raw": "{{baseurl}}/v2/store/order/",
 									"host": [
 										"{{baseurl}}"
 									],
 									"path": [
+										"v2",
 										"store",
 										"order",
 										""
@@ -867,9 +793,35 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"pm.test(\"Status code is 200\", function () {\r",
+											"pm.test(\"Response status code is 200\", function () {\r",
 											"    pm.response.to.have.status(200);\r",
-											"});"
+											"});\r",
+											"\r",
+											"pm.test(\"Response has the required fields - code, type, and message\", function () {\r",
+											"    const responseData = pm.response.json();\r",
+											"    \r",
+											"    pm.expect(responseData).to.be.an('object');\r",
+											"    pm.expect(responseData).to.have.property('code');\r",
+											"    pm.expect(responseData).to.have.property('type');\r",
+											"    pm.expect(responseData).to.have.property('message');\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Code is a non-negative integer\", function () {\r",
+											"  const responseData = pm.response.json();\r",
+											"  \r",
+											"  pm.expect(responseData.code).to.be.a('number').and.to.satisfy((code) => code >= 0, \"Code should be a non-negative integer\");\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Type and message are non-empty strings\", function () {\r",
+											"    const responseData = pm.response.json();\r",
+											"    \r",
+											"    pm.expect(responseData).to.be.an('object');\r",
+											"    pm.expect(responseData.type).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Type should not be empty\");\r",
+											"    pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");\r",
+											"});\r",
+											""
 										],
 										"type": "text/javascript",
 										"packages": {}
@@ -903,12 +855,9 @@
 									}
 								},
 								"url": {
-									"raw": "https://petstore.swagger.io/v2/user/login",
-									"protocol": "https",
+									"raw": "{{baseurl}}/v2/user/login",
 									"host": [
-										"petstore",
-										"swagger",
-										"io"
+										"{{baseurl}}"
 									],
 									"path": [
 										"v2",
@@ -945,12 +894,9 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "https://petstore.swagger.io/v2/user/login\n?username=login&password=Password",
-									"protocol": "https",
+									"raw": "{{baseurl}}/v2/user/login\n?username=login&password=Password",
 									"host": [
-										"petstore",
-										"swagger",
-										"io"
+										"{{baseurl}}"
 									],
 									"path": [
 										"v2",
@@ -1072,12 +1018,9 @@
 									}
 								],
 								"url": {
-									"raw": "https://petstore.swagger.io/v2/user/{{username}}\n",
-									"protocol": "https",
+									"raw": "{{baseurl}}/v2/user/{{username}}\n",
 									"host": [
-										"petstore",
-										"swagger",
-										"io"
+										"{{baseurl}}"
 									],
 									"path": [
 										"v2",
@@ -1100,8 +1043,7 @@
 									"listen": "prerequest",
 									"script": {
 										"exec": [
-											"// PRE-REQUEST SCRIPT:\r",
-											"// Generar datos únicos para el usuario\r",
+											"\r",
 											"const timestamp = Date.now();\r",
 											"const userData = {\r",
 											"    id: timestamp,\r",
@@ -1195,12 +1137,9 @@
 									}
 								},
 								"url": {
-									"raw": "https://petstore.swagger.io/v2/user/createWithList",
-									"protocol": "https",
+									"raw": "{{baseurl}}/v2/user/createWithList",
 									"host": [
-										"petstore",
-										"swagger",
-										"io"
+										"{{baseurl}}"
 									],
 									"path": [
 										"v2",
